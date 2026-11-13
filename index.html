@@ -9,13 +9,21 @@
   </head>
   <body>
     <header class="header" id="header"><h1>GHOST-NEWS224</h1></header>
-    <form id="formulaire" class="formulaire">
+    <form id="formulaire" class="formulaire" hidden>
   <input type="text" id="titre-input" placeholder="Titre de l'article">
   <textarea id="contenu-input" placeholder="Écris le article ici"></textarea>
   <button type="submit">Publier</button>
 </form>
+    <form id="login-form" class="formulaire">
+  <input type="email" id="email-input" placeholder="Email" required>
+  <input type="password" id="mdp-input" placeholder="Mot de passe" required>
+  <button type="submit">Connexion</button>
+</form>
+<button id="logout-btn" hidden>Déconnexion</button>
+
    <main class="main" id="main"></main> 
    <footer class="footer">DEV GHOST-MHD</footer>
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </body>
 </html>
