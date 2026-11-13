@@ -1,6 +1,8 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
 const SUPABASE_URL = "https://mescevouincapisgvxus.supabase.co";
 const SUPABASE_KEY = "sb_publishable_aQ7uZq1ycrc4A_z26UfCmQ_5aPzicI-";
-const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const client = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const main = document.getElementById("main");
 const formulaire = document.getElementById("formulaire");
@@ -51,9 +53,40 @@ formulaire.addEventListener("submit", async function (event) {
     .single();
 
   if (error) {
-    alert("Publication refusée :" + error.message );
+    alert("Publication refusée : il faut être connecté (étape suivante).");
     return;
   }
   afficherArticle(data);
   formulaire.reset();
+});
+const loginForm = document.getElementById("login-form");
+const emailInput = document.getElementById("email-input");
+const mdpInput = document.getElementById("mdp-input");
+const logoutBtn = document.getElementById("logout-btn");
+
+function majAffichage(session) {
+  const connecte = session !== null;
+  loginForm.hidden = connecte;
+  formulaire.hidden = !connecte;
+  logoutBtn.hidden = !connecte;
+}
+
+client.auth.getSession().then(({ data }) => majAffichage(data.session));
+client.auth.onAuthStateChange((event, session) => majAffichage(session));
+
+loginForm.addEventListener("submit", async function (event) {
+  event.preventDefault();
+  const { error } = await client.auth.signInWithPassword({
+    email: emailInput.value.trim(),
+    password: mdpInput.value
+  });
+  if (error) {
+    alert("Connexion refusée :" + error.message);
+    return;
+  }
+  loginForm.reset();
+});
+
+logoutBtn.addEventListener("click", async function () {
+  await client.auth.signOut();
 });
