@@ -24,7 +24,7 @@ function afficherArticle(article) {
     bloc.appendChild(contenue);
   boutton.textContent = "Supprimer";
   boutton.addEventListener("click", async function () {
-    if(!confirm("Supprimer cet article")) {
+    if(!confirm("Supprimer cet article ?")) {
       return;
     }
   const { data, error } = await client
@@ -73,7 +73,7 @@ formulaire.addEventListener("submit", async function (event) {
     .single();
 
   if (error) {
-    alert("Publication refusée : contunuez au l'etape suivante");
+    alert("Publication refusée : vérifie que tu es connecté");
     return;
   }
   afficherArticle(data);
