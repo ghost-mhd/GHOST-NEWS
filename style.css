@@ -33,3 +33,5 @@ article h2 {
 [hidden] {
   display: none !important;
 }
+.actions { display: none; }
+body.admin .actions { display: flex; gap: 10px; }

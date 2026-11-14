@@ -1,5 +1,3 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
 const SUPABASE_URL = "https://mescevouincapisgvxus.supabase.co";
 const SUPABASE_KEY = "sb_publishable_aQ7uZq1ycrc4A_z26UfCmQ_5aPzicI-";
 const client = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -18,9 +16,31 @@ function afficherArticle(article) {
   const contenue = document.createElement("p");
   contenue.textContent = article.contenu;
   const bloc = document.createElement("article");
+  const div = document.createElement("div");
+  div.className = "actions"
+  const boutton = document.createElement("button");
   bloc.appendChild(titre);
   bloc.appendChild(dates);
-  bloc.appendChild(contenue);
+    bloc.appendChild(contenue);
+  boutton.textContent = "Supprimer";
+  boutton.addEventListener("click", async function () {
+    if(!confirm("Supprimer cet article")) {
+      return;
+    }
+  const { data, error } = await client
+.from("articles")
+.delete()
+.eq("id", article.id)
+.select();
+if(error || data.length === 0) {
+alert("Suppression refussee")
+return;
+}
+bloc.remove();
+
+});
+    div.appendChild(boutton);
+  bloc.appendChild(div);
   main.appendChild(bloc);
 }
 
@@ -53,12 +73,13 @@ formulaire.addEventListener("submit", async function (event) {
     .single();
 
   if (error) {
-    alert("Publication refusée : il faut être connecté (étape suivante).");
+    alert("Publication refusée : contunuez au l'etape suivante");
     return;
   }
   afficherArticle(data);
   formulaire.reset();
 });
+ 
 const loginForm = document.getElementById("login-form");
 const emailInput = document.getElementById("email-input");
 const mdpInput = document.getElementById("mdp-input");
@@ -69,6 +90,7 @@ function majAffichage(session) {
   loginForm.hidden = connecte;
   formulaire.hidden = !connecte;
   logoutBtn.hidden = !connecte;
+  document.body.classList.toggle("admin", connecte);
 }
 
 client.auth.getSession().then(({ data }) => majAffichage(data.session));
